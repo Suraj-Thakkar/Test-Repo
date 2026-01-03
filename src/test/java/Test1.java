@@ -32,16 +32,17 @@ public class Test1 {
         WebDriverManager.chromedriver().setup();
         ChromeOptions options = new ChromeOptions();
         options.addArguments("--remote-allow-origins=*");
-        options.addArguments("--window-size=1920,1080"); // Match your recording size
+
 
         WebDriver driver = new ChromeDriver(options);
         // Explicitly set the size for the Virtual Display
-        driver.manage().window().setSize(new org.openqa.selenium.Dimension(1920, 1080));
+        driver.manage().window().maximize();
 
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(30));
 
         try {
             driver.get("https://yogi.web.cashbook.in/login");
+            wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//button[text()='Other ways to login']"))).click();
 
             // Step 1: Login
             WebElement phoneInput = wait.until(ExpectedConditions.elementToBeClickable(By.id("phoneNumber")));
