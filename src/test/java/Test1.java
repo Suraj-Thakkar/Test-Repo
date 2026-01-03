@@ -27,41 +27,54 @@ public class Test1 {
 
     @Test
     public void Test() throws Exception {
-        // 1. Start Recording
         startRecording("Yogi_Login_Test");
 
         WebDriverManager.chromedriver().setup();
         ChromeOptions options = new ChromeOptions();
         options.addArguments("--remote-allow-origins=*");
+        options.addArguments("--window-size=1920,1080"); // Match your recording size
 
         WebDriver driver = new ChromeDriver(options);
-        driver.manage().window().maximize();
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(60));
+        // Explicitly set the size for the Virtual Display
+        driver.manage().window().setSize(new org.openqa.selenium.Dimension(1920, 1080));
+
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(30));
 
         try {
             driver.get("https://yogi.web.cashbook.in/login");
 
-            wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("phoneNumber"))).sendKeys("+911000112587");
-            Thread.sleep(6000);
+            // Step 1: Login
+            WebElement phoneInput = wait.until(ExpectedConditions.elementToBeClickable(By.id("phoneNumber")));
+            phoneInput.sendKeys("+911000112587");
 
-            wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//button[@type='submit']"))).click();
+            WebElement submitBtn = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//button[@type='submit']")));
+            submitBtn.click();
 
-            wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("input[type='text']"))).sendKeys("123456");
-            wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//button[text()='Verify']"))).click();
+            // Step 2: OTP
+            WebElement otpInput = wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("input[type='text']")));
+            otpInput.sendKeys("123456");
+            driver.findElement(By.xpath("//button[text()='Verify']")).click();
 
-            Thread.sleep(5000);
-            wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//button[text()='Ok, Got it']"))).click();
+            // Step 3: Handle the "Ok, Got it" pop-up safely
+            try {
+                WebElement okBtn = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//button[text()='Ok, Got it']")));
+                okBtn.click();
+            } catch (TimeoutException e) {
+                System.out.println("Pop-up 'Ok, Got it' did not appear, continuing...");
+            }
 
-            wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//div[@class='box_position_relative_xs__1dl117711e']"))).click();
-            wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("input[name='q']"))).sendKeys("Rahul Mehta");
-            wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("input[value='lj6wYpwHdtxTL1acFmln']"))).click();
+            // Step 4: Final Actions
+            wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//div[contains(@class,'box_position_relative')]"))).click();
+
+            WebElement search = wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("input[name='q']")));
+            search.sendKeys("Rahul Mehta");
+
+            wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector("input[value='lj6wYpwHdtxTL1acFmln']"))).click();
 
         } catch (Exception e) {
-            // 2. Capture screenshot if any step fails
-            takeScreenshot(driver, "Test_Failure");
+            takeScreenshot(driver, "Failure_at_Step");
             throw e;
         } finally {
-            // 3. Stop recording and close browser
             stopRecording();
             driver.quit();
         }
