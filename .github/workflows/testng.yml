@@ -26,7 +26,7 @@ jobs:
         # Added mesa libraries to prevent screen recording "black screen" issues
         run: |
           sudo apt-get update
-          sudo apt-get install -y xvfb libosmesa6 libgl1-mesa-glx
+          sudo apt-get install -y xvfb libosmesa6 libgl1-mesa-dri libglx-mesa0
 
       - name: Run Tests with Virtual Display
         # We use a standard 1920x1080 resolution to match your Java code's capture area
