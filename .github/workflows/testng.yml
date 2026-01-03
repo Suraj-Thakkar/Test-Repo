@@ -2,10 +2,10 @@ name: Selenium Test Execution
 
 on:
   push:
-    branches: [ "main", "yogi" ]    # Added yogi branch since you are working there
+    branches: [ "main", "yogi" ]
   pull_request:
     branches: [ "main" ]
-  workflow_dispatch:                # Allows manual trigger from GitHub UI
+  workflow_dispatch:
 
 jobs:
   test:
@@ -20,24 +20,27 @@ jobs:
         with:
           java-version: '19'
           distribution: 'temurin'
-          cache: maven              # Speeds up subsequent runs by caching dependencies
+          cache: maven
 
       - name: Install Dependencies
-        # Added mesa libraries to prevent screen recording "black screen" issues
         run: |
           sudo apt-get update
           sudo apt-get install -y xvfb libosmesa6 libgl1-mesa-dri libglx-mesa0
 
+      - name: Create Folders for Artifacts
+        # Pre-creating folders ensures the Screen Recorder has a place to write the .avi file
+        run: mkdir -p recordings screenshots
+
       - name: Run Tests with Virtual Display
-        # We use a standard 1920x1080 resolution to match your Java code's capture area
+        # The resolution matches your Java Rectangle(0, 0, 1920, 1080)
         run: xvfb-run --server-args="-screen 0 1920x1080x24" mvn test
 
-      - name: Upload Execution Reports
-        if: always()                # Ensures reports upload even if the test fails
+      - name: Upload AVI Recordings and Screenshots
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: selenium-test-artifacts
           path: |
-            recordings/
-            screenshots/
+            recordings/*.avi
+            screenshots/*.png
             target/surefire-reports/

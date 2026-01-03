@@ -79,10 +79,11 @@ public class Test1 {
                 .getDefaultConfiguration();
 
         this.screenRecorder = new SpecializedScreenRecorder(gc, gc.getBounds(),
-                new Format(MediaTypeKey, MediaType.FILE, MimeTypeKey, MIME_QUICKTIME),
-                new Format(MediaTypeKey, MediaType.VIDEO, EncodingKey, ENCODING_QUICKTIME_ANIMATION,
-                        CompressorNameKey, ENCODING_QUICKTIME_ANIMATION, DepthKey, 24, FrameRateKey,
-                        Rational.valueOf(15), QualityKey, 1.0f, KeyFrameIntervalKey, 15 * 60),
+                new Format(MediaTypeKey, MediaType.FILE, MimeTypeKey, MIME_AVI),
+                new Format(MediaTypeKey, MediaType.VIDEO, EncodingKey, ENCODING_AVI_TECHSMITH_SCREEN_CAPTURE,
+                        CompressorNameKey, ENCODING_AVI_TECHSMITH_SCREEN_CAPTURE,
+                        DepthKey, 24, FrameRateKey, Rational.valueOf(15),
+                        QualityKey, 1.0f, KeyFrameIntervalKey, 15 * 60),
                 new Format(MediaTypeKey, MediaType.VIDEO, EncodingKey, "black", FrameRateKey, Rational.valueOf(30)),
                 null, file, methodName);
 
@@ -119,6 +120,6 @@ class SpecializedScreenRecorder extends ScreenRecorder {
     protected File createMovieFile(Format fileFormat) throws IOException {
         if (!movieFolder.exists()) movieFolder.mkdirs();
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd_HHmmss");
-        return new File(movieFolder, name + "_" + dateFormat.format(new Date()) + ".mp4");
+        return new File(movieFolder, name + "_" + dateFormat.format(new Date()) + ".avi");
     }
 }
