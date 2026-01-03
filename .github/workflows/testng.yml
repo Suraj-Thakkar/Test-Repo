@@ -20,9 +20,9 @@ jobs:
 
       - name: Install Xvfb
         run: sudo apt-get install xvfb
-               - name: Run Selenium Tests
+          - name: Run Selenium Tests
           # This creates a virtual monitor for the screen recorder to "see"
-               run: xvfb-run mvn test
+          run: xvfb-run mvn test
 
       - name: Run Tests with Virtual Display
         # xvfb-run creates a virtual monitor (1280x1024)
