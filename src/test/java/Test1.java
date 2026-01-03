@@ -72,7 +72,7 @@ public class Test1 {
     public void startRecording(String methodName) throws Exception {
         File file = new File(System.getProperty("user.dir") + File.separator + "recordings");
         if (!file.exists()) file.mkdirs();
-
+        Rectangle captureSize = new Rectangle(0, 0, 1920, 1080);
         GraphicsConfiguration gc = GraphicsEnvironment
                 .getLocalGraphicsEnvironment()
                 .getDefaultScreenDevice()
